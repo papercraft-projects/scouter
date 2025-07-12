@@ -29,7 +29,7 @@ import javax.ws.rs.ext.Provider;
 public class JerseyMapperProvider implements ContextResolver<ObjectMapper> {
 	private static ObjectMapper apiMapper;
 	static {
-		apiMapper = new ObjectMapper().configure(JsonGenerator.Feature.WRITE_NUMBERS_AS_STRINGS, true);
+		apiMapper = new ObjectMapper().configure(JsonGenerator.Feature.WRITE_NUMBERS_AS_STRINGS, false);
 	}
 	@Override
 	public ObjectMapper getContext(Class<?> type)

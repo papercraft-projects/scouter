@@ -19,6 +19,7 @@
 package scouterx.webapp.framework.configure;
 
 import scouter.util.StrMatch;
+import scouterx.webapp.framework.client.server.Server;
 
 import java.util.List;
 import java.util.Set;
@@ -152,5 +153,10 @@ public class StandAloneConfigureAdaptor implements ConfigureAdaptor {
     @Override
     public String getNetHttpApiCorsAllowCredentials() {
         return conf.net_http_api_cors_allow_credentials;
+    }
+
+    @Override
+    public void setServerConfig(Server server) {
+        conf.setServerConfig(server);
     }
 }

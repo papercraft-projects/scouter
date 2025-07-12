@@ -25,6 +25,7 @@ import scouterx.webapp.framework.client.server.ServerManager;
 import scouterx.webapp.model.countermodel.CounterModelData;
 import scouterx.webapp.view.CommonResultView;
 import scouterx.webapp.view.ServerView;
+import scouterx.webapp.view.ServerViewDetail;
 
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
@@ -52,13 +53,16 @@ public class InfoController {
     @NoAuth
     @GET @Path("/server")
     @Consumes(MediaType.APPLICATION_JSON)
-    public CommonResultView<List<ServerView>> retrieveServers() {
-        List<ServerView> serverList = ServerManager.getInstance().getAllServerList().stream()
-                .map(s -> new ServerView(s.getId(),
+    public CommonResultView<List<ServerViewDetail>> retrieveServers() {
+        List<ServerViewDetail> serverList = ServerManager.getInstance().getAllServerList().stream()
+                .map(s -> new ServerViewDetail(s.getId(),
                         s.getName(),
                         s.getSession() != 0,
-                        System.currentTimeMillis()-s.getDelta(),
-                        s.getVersion()))
+                        s.getCurrentTime(),
+                        s.getVersion(),
+                        String.join(":",s.getIp(),String.valueOf(s.getPort())),
+                        s.getTimezone()
+                ))
                 .collect(Collectors.toList());
 
         return CommonResultView.success(serverList);

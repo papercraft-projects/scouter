@@ -19,6 +19,7 @@
 package scouterx.webapp.framework.configure;
 
 import scouter.util.StrMatch;
+import scouterx.webapp.framework.client.server.Server;
 
 import java.util.List;
 import java.util.Set;
@@ -52,4 +53,5 @@ public interface ConfigureAdaptor {
     String getNetHttpApiSwaggerHostIp();
     String getNetHttpApiCorsAllowOrigin();
     String getNetHttpApiCorsAllowCredentials();
+    void setServerConfig(Server server);
 }

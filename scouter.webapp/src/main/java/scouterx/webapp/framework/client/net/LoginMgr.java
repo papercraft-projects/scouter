@@ -49,12 +49,14 @@ public class LoginMgr{
 			MapPack out = TcpProxy.loginByCleanConnection(server.getId(), param);
 			if (out == null) {
 				result.success = false;
+				result.code = 4000;
 				result.errorMessage = "Network connection failed";
 			} else {
 				long session = out.getLong("session");
 				String error = out.getText("error");
 				if(error != null && session == 0L){
 					result.success = false;
+					result.code = 4004;
 					result.errorMessage = "Authentication failed";
 					return result;
 				}

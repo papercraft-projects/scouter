@@ -16,29 +16,33 @@
  *
  */
 
-package scouterx.webapp.framework.configure;
+package scouterx.webapp.view;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 /**
- * @author Gun Lee (gunlee01@gmail.com) on 2017. 8. 26.
+ * @author Gun Lee (gunlee01@gmail.com) on 2017. 8. 28.
  */
 @Getter
 @Setter
-@AllArgsConstructor
-public class ServerConfig {
+public class ServerViewDetail extends ServerView{
     String ip;
-    String port;
-    String id;
-    String password;
-
-    public String getProperty(){
-        return String.join(":",ip,port,id,password);
+    String timezone;
+    @Builder
+    public ServerViewDetail(int id, String name,
+                            boolean connected,
+                            long serverTime,
+                            String version,
+                            String ip,
+                            String timezone
+                           ){
+        super(id,name,connected,serverTime,version);
+        this.ip = ip;
+        this.timezone = timezone;
     }
-    public boolean toEqual(String ip, String port){
-        return ip.equals(this.ip) && port.equals(this.port);
 
-    }
 }

@@ -218,7 +218,7 @@ public class XLogController {
 
                 MapPack metaPack = (MapPack) p;
                 jsonGenerator.writeBooleanField("hasMore", metaPack.getBoolean(ParamConstant.XLOG_RESULT_HAS_MORE));
-                jsonGenerator.writeNumberField("lastTxid", metaPack.getLong(ParamConstant.XLOG_RESULT_LAST_TXID));
+                jsonGenerator.writeStringField("lastTxid", String.valueOf(metaPack.getLong(ParamConstant.XLOG_RESULT_LAST_TXID)));
                 jsonGenerator.writeNumberField("lastXLogTime", metaPack.getLong(ParamConstant.XLOG_RESULT_LAST_TIME));
                 jsonGenerator.writeNumberField("count", countable[0]);
             }

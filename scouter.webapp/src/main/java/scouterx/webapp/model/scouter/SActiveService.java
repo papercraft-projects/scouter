@@ -16,6 +16,7 @@ package scouterx.webapp.model.scouter;
  *  limitations under the License. 
  */
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import scouter.lang.pack.MapPack;
 import scouter.lang.pack.Pack;
@@ -23,6 +24,7 @@ import scouter.lang.value.ListValue;
 import scouter.util.StringUtil;
 import scouterx.webapp.framework.client.model.AgentModelThread;
 import scouterx.webapp.framework.client.model.AgentObject;
+import scouterx.webapp.framework.mapper.LongToStringSerializer;
 import scouterx.webapp.model.enums.ActiveServiceMode;
 
 import java.util.ArrayList;
@@ -35,11 +37,14 @@ import java.util.List;
 public class SActiveService {
 	int objHash;
 	String objName;
+	@JsonSerialize(using = LongToStringSerializer.class)
 	long threadId;
 	String threadName;
 	String threadStatus;
+	@JsonSerialize(using = LongToStringSerializer.class)
 	long threadCpuTime;
 	String txidName;
+	@JsonSerialize(using = LongToStringSerializer.class)
 	long elapsed;
 	String serviceName;
 	String ipaddr;

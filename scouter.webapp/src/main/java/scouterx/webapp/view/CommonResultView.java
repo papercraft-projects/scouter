@@ -39,7 +39,8 @@ import java.util.function.Consumer;
 @Setter
 public class CommonResultView<T> {
 	private static final int SUCCESS = 0;
-	private static final ObjectMapper objectMapper = new ObjectMapper().configure(JsonGenerator.Feature.WRITE_NUMBERS_AS_STRINGS, true);
+	private static final int FAIL = -1;
+	private static final ObjectMapper objectMapper = new ObjectMapper();
 	
 	private int status = HttpStatus.OK_200;
 	private String requestId;
@@ -67,9 +68,15 @@ public class CommonResultView<T> {
 	public static CommonResultView<Boolean> success() {
 		return new CommonResultView<>(SUCCESS, "success", true);
 	}
+	public static CommonResultView<Boolean> fail() {
+		return new CommonResultView<>(FAIL, "fail", false);
+	}
 
 	public static <T> CommonResultView<T> success(T result) {
 		return new CommonResultView<>(SUCCESS, "success", result);
+	}
+	public static <T> CommonResultView<T> fail(T result) {
+		return new CommonResultView<>(FAIL, "fail", result);
 	}
 
 	public static <T> CommonResultView fail(int resultCode, String message, T result) {

@@ -18,6 +18,7 @@
 
 package scouterx.webapp.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +27,7 @@ import scouter.lang.pack.XLogTypes;
 import scouterx.webapp.framework.client.model.TextLoader;
 import scouterx.webapp.framework.client.model.TextProxy;
 import scouterx.webapp.framework.client.model.TextTypeEnum;
+import scouterx.webapp.framework.mapper.LongToStringSerializer;
 import scouterx.webapp.framework.util.ZZ;
 
 /**
@@ -50,6 +52,7 @@ public class XLogData {
     /**
      * Transaction ID
      */
+    @JsonSerialize(using = LongToStringSerializer.class)
     private long txid;
     /**
      * thread name
@@ -58,10 +61,12 @@ public class XLogData {
     /**
      * Caller ID
      */
+    @JsonSerialize(using = LongToStringSerializer.class)
     private long caller;
     /**
      * Global transaction ID
      */
+    @JsonSerialize(using = LongToStringSerializer.class)
     private long gxid;
     /**
      * Elapsed time(ms)
@@ -95,6 +100,7 @@ public class XLogData {
     /**
      * xlog generated random string to indicate unique user
      */
+    @JsonSerialize(using = LongToStringSerializer.class)
     private long internalId;
     /**
      * User-agent hash

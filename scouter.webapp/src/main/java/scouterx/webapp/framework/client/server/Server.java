@@ -17,6 +17,8 @@
  */
 package scouterx.webapp.framework.client.server;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
 import lombok.extern.slf4j.Slf4j;
 import scouter.lang.counters.CounterEngine;
 import scouter.lang.value.MapValue;
@@ -25,6 +27,10 @@ import scouterx.webapp.framework.client.net.ConnectionPool;
 import scouterx.webapp.framework.client.thread.XLogRetrieveThread;
 import scouterx.webapp.framework.configure.ConfigureAdaptor;
 import scouterx.webapp.framework.configure.ConfigureManager;
+
+import java.util.Enumeration;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Slf4j
 public class Server {
@@ -115,7 +121,7 @@ public class Server {
 			this.delta = serverTime - System.currentTimeMillis();
 		}
 	}
-	
+
 	public String getTimezone() {
 		return timezone;
 	}
@@ -176,7 +182,15 @@ public class Server {
 	public void setGroupPolicy(MapValue mv) {
 		this.groupPolicyMap = mv;
 	}
-	
+	public Map<String,Boolean> getGroupPolicy(){
+		Enumeration<String> keys = this.groupPolicyMap.keys();
+		Map<String,Boolean> result = new LinkedHashMap<>();
+		while(keys.hasMoreElements()){
+			String key = keys.nextElement();
+			result.put(key, this.groupPolicyMap.getBoolean(key));
+		}
+		return result;
+	}
 	public boolean isAllowAction(String name) {
 		return groupPolicyMap.getBoolean(name);
 	}
@@ -263,5 +277,10 @@ public class Server {
 				+ port + ", delta=" + delta
 				+ ", userId=" + userId + ", group=" + group + ", version="
 				+ version + "]";
+	}
+
+	public String getProperty() {
+		return String.join(":",ip,String.valueOf(port),userId,encryptedPass);
+
 	}
 }

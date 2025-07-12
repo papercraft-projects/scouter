@@ -29,9 +29,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ServerView {
-    final private int id;
-    final private String name;
-    final private boolean connected;
-    final private long serverTime;
-    final private String version;
+    final protected int id;
+    final protected String name;
+    final protected boolean connected;
+    final protected long serverTime;
+    final protected String version;
+
+
 }

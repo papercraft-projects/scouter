@@ -207,7 +207,7 @@ public class WebAppMain extends Application {
 
         List<ServerConfig> serverConfigList = ConfigureManager.getConfigure().getServerConfigs();
         ServerManager srvMgr = ServerManager.getInstance();
-        for (ServerConfig serverConfig : serverConfigList) {
+        for ( ServerConfig serverConfig : serverConfigList) {
             scouterx.webapp.framework.client.server.Server server = new scouterx.webapp.framework.client.server.Server(serverConfig.getIp(), serverConfig.getPort());
             if (srvMgr.getServer(server.getId()) == null) {
                 srvMgr.addServer(server);
@@ -228,6 +228,7 @@ public class WebAppMain extends Application {
                 log.error("Fail to log in to {}:{}", server.getIp(), server.getPort());
             }
         }
+        AgentModelThread.getInstance();
         ServerSessionObserver.load();
     }
 

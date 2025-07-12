@@ -43,11 +43,15 @@ public class SCounter {
         this.name = name;
         this.value = value;
 
-        AgentObject agentObject = AgentModelThread.getInstance().getAgentObject(objHash);
-        CounterEngine counterEngine = ServerManager.getInstance().getServerIfNullDefault(agentObject.getServerId()).getCounterEngine();
+        try {
+            AgentObject agentObject = AgentModelThread.getInstance().getAgentObject(objHash);
+            CounterEngine counterEngine = ServerManager.getInstance().getServerIfNullDefault(agentObject.getServerId()).getCounterEngine();
+            this.displayName = counterEngine.getCounterDisplayName(agentObject.getObjType(), name);
+            this.unit = counterEngine.getCounterUnit(agentObject.getObjType(), name);
+            this.objName = agentObject.getObjName();
+        }catch (NullPointerException e){
 
-        this.displayName = counterEngine.getCounterDisplayName(agentObject.getObjType(), name);
-        this.unit = counterEngine.getCounterUnit(agentObject.getObjType(), name);
-        this.objName = agentObject.getObjName();
+        }
+
     }
 }

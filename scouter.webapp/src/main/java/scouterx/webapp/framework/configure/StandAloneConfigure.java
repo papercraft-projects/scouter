@@ -18,6 +18,7 @@
 
 package scouterx.webapp.framework.configure;
 
+import lombok.extern.slf4j.Slf4j;
 import scouter.lang.conf.ConfObserver;
 import scouter.lang.conf.ConfigDesc;
 import scouter.lang.conf.ConfigValueType;
@@ -33,21 +34,13 @@ import scouter.util.StringKeyLinkedMap;
 import scouter.util.StringSet;
 import scouter.util.StringUtil;
 import scouter.util.ThreadUtil;
+import scouterx.webapp.framework.client.server.Server;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
+@Slf4j
 public class StandAloneConfigure extends Thread {
 	private static StandAloneConfigure instance = null;
 	public final static String CONF_DIR = "./conf/";
@@ -67,7 +60,7 @@ public class StandAloneConfigure extends Thread {
 	//Network
 	@ConfigDesc("Collector connection infos - eg) host:6100:id:pw,host2:6100:id2:pw2")
 	@ConfigValueType(ValueType.COMMA_SEPARATED_VALUE)
-	public String net_collector_ip_port_id_pws = "127.0.0.1:6100:admin:admin";
+	public String net_collector_ip_port_id_pws = "";
 
 	@ConfigDesc("size of webapp connection pool to collector")
 	public int net_webapp_tcp_client_pool_size = 100;
@@ -194,7 +187,7 @@ public class StandAloneConfigure extends Thread {
 	private void apply() {
 		this._trace = getBoolean("_trace", false);
 
-		this.net_collector_ip_port_id_pws = getValue("net_collector_ip_port_id_pws", "127.0.0.1:6100:admin:admin");
+		this.net_collector_ip_port_id_pws = getValue("net_collector_ip_port_id_pws", "");
 
 		this.net_webapp_tcp_client_pool_size = getInt("net_webapp_tcp_client_pool_size", 100);
 		this.net_webapp_tcp_client_pool_timeout = getInt("net_webapp_tcp_client_pool_timeout", 15000);
@@ -231,13 +224,17 @@ public class StandAloneConfigure extends Thread {
 	}
 
 	public List<ServerConfig> getServerConfigs() {
-		List<ServerConfig> list = Stream.of(this.net_collector_ip_port_id_pws.split(","))
-				.map(s -> {
-					String val[] = s.split(":");
-					return new ServerConfig(val[0], val[1], val[2], val[3]);
-				}).collect(Collectors.toList());
+		if(!this.net_collector_ip_port_id_pws.isEmpty()) {
+			List<ServerConfig> list = Stream.of(this.net_collector_ip_port_id_pws.split(","))
+					.map(s -> {
+						String val[] = s.split(":");
+						return new ServerConfig(val[0], val[1], val[2], val[3]);
+					}).collect(Collectors.toList());
 
-		return list;
+			return list;
+		}else{
+			return Collections.emptyList();
+		}
 	}
 
 	private StringSet getStringSet(String key, String deli) {
@@ -362,6 +359,56 @@ public class StandAloneConfigure extends Thread {
 
 	public StringKeyLinkedMap<ValueType> getConfigureValueType() {
 		return ConfigValueUtil.getConfigValueTypeMap(this);
+	}
+
+	public void setServerConfig(Server server) {
+		File propertyFile = this.getPropertyFile();
+		String serverConfig = server.getProperty();
+		boolean isEqual = this.getServerConfigs().stream().anyMatch(d-> d.toEqual(server.getIp(),String.valueOf(server.getPort())));
+		if(!isEqual) {
+			String update = this.net_collector_ip_port_id_pws.isEmpty() ? serverConfig : String.join(",",this.net_collector_ip_port_id_pws,serverConfig);
+			this.updatePropertyPreserveComments(propertyFile,"net_collector_ip_port_id_pws", update);
+		}
+
+	}
+	private void updatePropertyPreserveComments(File propertyFile, String keyToUpdate, String newValue) {
+		List<String> lines = new ArrayList<>();
+		boolean updated = false;
+
+		try (BufferedReader reader = new BufferedReader(new FileReader(propertyFile))) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				String trimmed = line.trim();
+				if (!trimmed.startsWith("#") && trimmed.contains("=")) {
+					String[] parts = trimmed.split("=", 2);
+					String key = parts[0].trim();
+					if (key.equals(keyToUpdate)) {
+						// 해당 키 값을 갱신
+						line = key + "=" + newValue;
+						updated = true;
+					}
+				}
+				lines.add(line);
+			}
+		} catch (IOException e) {
+			log.error("flowkat log error",e);
+			return;
+		}
+
+		if (!updated) {
+			// 기존에 키가 없으면 맨 마지막에 추가
+			lines.add(keyToUpdate + "=" + newValue);
+		}
+
+		// 다시 저장
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(propertyFile))) {
+			for (String l : lines) {
+				writer.write(l);
+				writer.newLine();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

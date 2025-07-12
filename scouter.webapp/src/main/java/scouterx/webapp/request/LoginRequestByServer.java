@@ -16,29 +16,30 @@
  *
  */
 
-package scouterx.webapp.framework.configure;
+package scouterx.webapp.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import scouterx.webapp.framework.client.server.ServerManager;
+import scouterx.webapp.model.scouter.SUser;
+
+import javax.validation.constraints.NotNull;
 
 /**
- * @author Gun Lee (gunlee01@gmail.com) on 2017. 8. 26.
+ * @author Gun Lee (gunlee01@gmail.com) on 2017. 8. 27.
  */
 @Getter
 @Setter
-@AllArgsConstructor
-public class ServerConfig {
-    String ip;
-    String port;
-    String id;
-    String password;
+@ToString
+public class LoginRequestByServer {
 
-    public String getProperty(){
-        return String.join(":",ip,port,id,password);
-    }
-    public boolean toEqual(String ip, String port){
-        return ip.equals(this.ip) && port.equals(this.port);
+    @NotNull
+    String server;
+    @NotNull
+    int port;
+    @NotNull
+    private SUser user;
 
-    }
+
 }

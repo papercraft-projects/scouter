@@ -25,8 +25,10 @@ import scouterx.webapp.framework.client.server.ServerManager;
 import scouterx.webapp.layer.service.UserService;
 import scouterx.webapp.layer.service.UserTokenService;
 import scouterx.webapp.request.LoginRequest;
+import scouterx.webapp.request.LoginRequestByServer;
 import scouterx.webapp.view.BearerTokenView;
 import scouterx.webapp.view.CommonResultView;
+import scouterx.webapp.view.LoginServerView;
 
 import javax.crypto.KeyGenerator;
 import javax.inject.Singleton;
@@ -41,6 +43,7 @@ import javax.ws.rs.core.MediaType;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Optional;
 
 /**
  * @author Gun Lee (gunlee01@gmail.com) on 2017. 8. 27.
@@ -70,6 +73,14 @@ public class UserController {
 
         return CommonResultView.success();
     }
+    @NoAuth
+    @POST @Path("/login/server")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public CommonResultView<LoginServerView> loginByServer(@Valid final LoginRequestByServer loginRequest) {
+
+        return userService.session(loginRequest);
+    }
+
 
     /**
      * login for 3rd party application ( success will be responsed with Bearer Token which should be exist in the 'Authorization' header from next request.)

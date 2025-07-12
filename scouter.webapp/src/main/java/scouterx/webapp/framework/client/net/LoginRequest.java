@@ -23,6 +23,7 @@ import scouter.util.StringUtil;
 public class LoginRequest {
 	
 	public boolean success;
+	public int code;
 	public String errorMessage;
 	
 	public String getErrorMessage() {

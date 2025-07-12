@@ -88,8 +88,8 @@ public class ObjectController {
     @GET
     @ApiOperation(value = "/remove/inactive", notes = "remove inactive object.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK - Json Data"),
-            @ApiResponse(code = 500, message = "Server error")
+        @ApiResponse(code = 200, message = "OK - Json Data"),
+        @ApiResponse(code = 500, message = "Server error")
     })
     @Path("/remove/inactive")
     public CommonResultView removeInactive() {
